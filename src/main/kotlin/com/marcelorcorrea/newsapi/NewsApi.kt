@@ -18,34 +18,17 @@ class NewsApi(apiKey: String) : KoinComponent {
     private val newsApiService: NewsApiService by inject()
 
     suspend fun fetchSources(block: SourceRequest.() -> Unit): SourceResult {
-        val sourceRequest = SourceRequest().apply { block() }
-        return newsApiService.getSources(
-            sourceRequest.category?.value,
-            sourceRequest.language?.value,
-            sourceRequest.country?.value
-        )
+        val (category, language, country) = SourceRequest().apply { block() }
+        return newsApiService.getSources(category?.value, language?.value, country?.value)
     }
 
     suspend fun fetchEverything(block: EverythingRequest.() -> Unit): ArticleResult {
-        val everything = EverythingRequest().apply { block() }
-        return newsApiService.getEverything(
-            everything.q,
-            everything.sources,
-            everything.domains,
-            everything.from,
-            everything.to,
-            everything.language?.value,
-            everything.sortBy?.value
-        )
+        val (q, sources, domains, from, to, language, sortBy) = EverythingRequest().apply { block() }
+        return newsApiService.getEverything(q, sources, domains, from, to, language?.value, sortBy?.value)
     }
 
     suspend fun fetchTopHeadlines(block: TopHeadlinesRequest.() -> Unit): ArticleResult {
-        val topHeadlines = TopHeadlinesRequest().apply { block() }
-        return newsApiService.getTopHeadlines(
-            topHeadlines.category?.value,
-            topHeadlines.country?.value,
-            topHeadlines.sources,
-            topHeadlines.q
-        )
+        val (q, category, country, sources) = TopHeadlinesRequest().apply { block() }
+        return newsApiService.getTopHeadlines(category?.value, country?.value, sources, q)
     }
 }
